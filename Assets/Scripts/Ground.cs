@@ -11,7 +11,7 @@ public class Ground : MonoBehaviour
 
         if(transform.position.x < -50f)
         {
-            transform.position = new Vector2(46, 0);
+            transform.position = new Vector2(46, 3);
         }
     }
 }
