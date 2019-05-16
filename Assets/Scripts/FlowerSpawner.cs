@@ -11,19 +11,24 @@ public class FlowerSpawner : MonoBehaviour
     public ParticleSystem bloom;
     public GameObject growPoint;
 
+    private Alien alien;
     private CharacterController2D characterController;
+    private GameController gc;
 
     private bool seed;
 
     private void Awake()
     {
+        gc = FindObjectOfType<GameController>();
+        alien = GetComponentInParent<Alien>();
         characterController = GetComponentInParent<CharacterController2D>();
     }
 
     private void Update()
     {
-        if(transform.rotation.z > 0 && !seed && characterController.grounded)
+        if(transform.rotation.z > 0 && !seed && characterController.grounded && alien.seeds > 0)
         {
+            alien.seeds -= 2;
             seed = true;
             GrowFlowers();
         }
@@ -38,7 +43,8 @@ public class FlowerSpawner : MonoBehaviour
     {
         bloom.Play();
         int numberToGrow = Random.Range(minFlowers, maxFlowers);
-        for(int i = 0; i < numberToGrow; i++)
+        gc.flowersGrown += numberToGrow;
+        for (int i = 0; i < numberToGrow; i++)
         {
             float randomX = Random.Range(-2f, 2f);
             Instantiate(flower, new Vector2(growPoint.transform.position.x + randomX, growPoint.transform.position.y), Quaternion.identity);

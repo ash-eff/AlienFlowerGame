@@ -4,14 +4,28 @@ using UnityEngine;
 
 public class Ground : MonoBehaviour
 {
-    // Update is called once per frame
-    void Update()
-    {
-        transform.Translate(-Vector3.right * 5 * Time.deltaTime);
+    private GameController gc;
+    private Collider2D coll;
+    private float resetPosX;
+    private Camera cam;
+    public float distX;
+    public float boundSizeX;
 
-        if(transform.position.x < -50f)
+    private void Awake()
+    {
+        cam = Camera.main;
+        coll = GetComponent<Collider2D>();
+        gc = FindObjectOfType<GameController>();
+        boundSizeX = coll.bounds.size.x;
+    }
+
+    private void Update()
+    {
+        distX = cam.transform.position.x - transform.position.x;
+        if(distX > boundSizeX)
         {
-            transform.position = new Vector2(46, 3);
+            resetPosX = cam.transform.position.x + boundSizeX;
+            transform.position = new Vector2(Mathf.RoundToInt(resetPosX), transform.position.y);
         }
     }
 }
