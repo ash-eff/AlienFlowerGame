@@ -12,9 +12,14 @@ public class Alien : MonoBehaviour
     private CharacterController2D characterController;
     private GameController gc;
     private Animator anim;
+    private AudioSource audioSource;
+
+    public AudioClip pickUpSound;
+    public AudioClip jumpSound;
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         characterController = GetComponent<CharacterController2D>();
         gc = FindObjectOfType<GameController>();
         anim = GetComponent<Animator>();
@@ -22,6 +27,11 @@ public class Alien : MonoBehaviour
 
     private void Update()
     {
+        if (gc.gameOver)
+        {
+            return;
+        }
+
         if(seeds < 0)
         {
             seeds = 0;
@@ -34,6 +44,11 @@ public class Alien : MonoBehaviour
         transform.Translate(Vector2.right * gc.runSpeed * Time.deltaTime);
         if (Input.GetButtonDown("Jump"))
         {
+            if (characterController.grounded)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
+
             jump = true;
         }
     }
@@ -48,7 +63,7 @@ public class Alien : MonoBehaviour
     {
         if(collision.tag == "Seed")
         {
-
+            audioSource.PlayOneShot(pickUpSound);
             seeds++;
             Destroy(collision.gameObject);
         }

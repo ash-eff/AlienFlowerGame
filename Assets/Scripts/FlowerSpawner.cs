@@ -14,11 +14,14 @@ public class FlowerSpawner : MonoBehaviour
     private Alien alien;
     private CharacterController2D characterController;
     private GameController gc;
+    private AudioSource audioSource;
 
     private bool seed;
+    private bool step;
 
     private void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         gc = FindObjectOfType<GameController>();
         alien = GetComponentInParent<Alien>();
         characterController = GetComponentInParent<CharacterController2D>();
@@ -26,15 +29,26 @@ public class FlowerSpawner : MonoBehaviour
 
     private void Update()
     {
-        if(transform.rotation.z > 0 && !seed && characterController.grounded && alien.seeds > 0)
+        if(transform.rotation.z > 0 && !seed && characterController.grounded)
         {
-            alien.seeds -= 2;
-            seed = true;
-            GrowFlowers();
+            if (!step)
+            {
+                step = true;
+                audioSource.Play();
+            }
+
+            if(alien.seeds > 0)
+            {
+                alien.seeds -= 2;
+                seed = true;
+                GrowFlowers();
+            }
+
         }
 
         if(transform.rotation.z < 0)
         {
+            step = false;
             seed = false;
         }
     }
